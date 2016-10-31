@@ -710,19 +710,19 @@ void XBeeResponse::getModemStatusResponse(XBeeResponse &modemStatusResponse) {
 }
 
 void XBeeResponse::getNodeIdentifierResponse(XBeeResponse &response) {
-    
+
     NodeIdentifierResponse* at = static_cast<NodeIdentifierResponse*>(&response);
-    
+
     // pass pointer array to subclass
     at->setFrameData(getFrameData());
     setCommon(response);
-    
+
     at->getSourceAddress64().setMsb((uint32_t(getFrameData()[1]) << 24) + (uint32_t(getFrameData()[2]) << 16) + (uint16_t(getFrameData()[3]) << 8) + getFrameData()[4]);
     at->getSourceAddress64().setLsb((uint32_t(getFrameData()[5]) << 24) + (uint32_t(getFrameData()[6]) << 16) + (uint16_t(getFrameData()[7]) << 8) + (getFrameData()[8]));
-    
+
     at->getRemoteAddress64().setMsb((uint32_t(getFrameData()[13]) << 24) + (uint32_t(getFrameData()[14]) << 16) + (uint16_t(getFrameData()[15]) << 8) + getFrameData()[16]);
     at->getRemoteAddress64().setLsb((uint32_t(getFrameData()[17]) << 24) + (uint32_t(getFrameData()[18]) << 16) + (uint16_t(getFrameData()[19]) << 8) + (getFrameData()[20]));
-    
+
     uint8_t niStringLength = 0;
     while(getFrameData()[21 + niStringLength++]);
     at->setNIStringLength(niStringLength);
@@ -783,7 +783,7 @@ uint16_t NodeIdentifierResponse::getRemoteAddress16() {
     return uint16_t((getFrameData()[11] << 8) + getFrameData()[12]);
 }
 
-char* NodeIdentifierResponse::getNodeIdentifierString() {
+unsigned char* NodeIdentifierResponse::getNodeIdentifierString() {
     return getFrameData() + 21;
 }
 
@@ -1137,6 +1137,13 @@ ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint16_t addr16, uint8_t b
 }
 
 ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
+	_addr64 = addr64;
+	_addr16 = ZB_BROADCAST_ADDRESS;
+	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
+	_option = ZB_TX_UNICAST;
+}
+
+ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = ZB_BROADCAST_ADDRESS;
 	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
@@ -1866,4 +1873,3 @@ uint8_t XBeeWithCallbacks::waitForStatus(uint8_t frameId, uint16_t timeout) {
 	} while (millis() - start < timeout);
 	return XBEE_WAIT_TIMEOUT ;
 }
-

@@ -680,7 +680,7 @@ class NodeIdentifierResponse : public XBeeResponse {
         /**
          * Returns the string node identifier
          */
-        char* getNodeIdentifierString();
+        unsigned char* getNodeIdentifierString();
         /**
          * Return the identifier string length
          */
@@ -705,10 +705,10 @@ class NodeIdentifierResponse : public XBeeResponse {
          * Returns the manufacturer ID
          */
         uint16_t getManufacturerID();
-        
+
         static const uint8_t API_ID = ZB_IO_NODE_IDENTIFIER_RESPONSE;
         void setNIStringLength(uint8_t len);
-    
+
     private:
         XBeeAddress64 _sourceAddress64;
         XBeeAddress64 _remoteAddress64;
@@ -1261,6 +1261,8 @@ public:
 	 */
 	ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength);
 	ZBTxRequest(const XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
+	ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength, uint8_t frameId);
+
 	/**
 	 * Creates a default instance of this class.  At a minimum you must specify
 	 * a payload, payload length and a 64-bit destination address before sending
