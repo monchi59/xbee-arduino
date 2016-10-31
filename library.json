@@ -5,8 +5,8 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/andrewrapp/xbee-arduino.git"
-  },  
+    "url": "https://github.com/monchi59/xbee-arduino.git"
+  },
   "include":
   [
     "*.cpp",
